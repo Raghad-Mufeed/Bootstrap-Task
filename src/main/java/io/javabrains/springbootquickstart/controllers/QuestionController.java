@@ -1,6 +1,8 @@
 package io.javabrains.springbootquickstart.controllers;
 
 import ch.qos.logback.core.util.DefaultInvocationGate;
+import com.sun.tools.jconsole.JConsoleContext;
+import io.javabrains.springbootquickstart.DTOModels.DTOQuestion;
 import io.javabrains.springbootquickstart.models.Category;
 import io.javabrains.springbootquickstart.models.Question;
 import org.apache.catalina.filters.ExpiresFilter;
@@ -41,12 +43,9 @@ public class QuestionController {
     }
 
     @PostMapping("/categories/{categoryId}/questions")
-    public ResponseEntity<String> addQuestion(@RequestBody Question question,@PathVariable int categoryId){
-        Category temp = new Category("","","",null);
-        temp.setId(categoryId);
-        question.setCategory(temp);
+    public ResponseEntity<String> addQuestion(@RequestBody DTOQuestion dtoQuestion){
         try {
-            questionService.addQuestion(question);
+            questionService.addQuestion(dtoQuestion);
             return new ResponseEntity<>("The question is added successfully", HttpStatus.OK);
         }
         catch(Error error) {
@@ -55,12 +54,9 @@ public class QuestionController {
     }
 
     @PutMapping("/categories/{categoryId}/questions")
-    public ResponseEntity<String> updateQuestion(@RequestBody Question question, @PathVariable int categoryId){
-        Category temp = new Category("","","",null);
-        temp.setId(categoryId);
-        question.setCategory(temp);
+    public ResponseEntity<String> updateQuestion(@RequestBody DTOQuestion dtoQuestion){
         try {
-            questionService.updateQuestion(question);
+            questionService.updateQuestion(dtoQuestion);
             return new ResponseEntity<>("The question is updated successfully", HttpStatus.OK);
         }
         catch(Error error) {

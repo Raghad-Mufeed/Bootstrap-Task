@@ -1,7 +1,6 @@
 package io.javabrains.springbootquickstart.controllers;
 
 import io.javabrains.springbootquickstart.models.Answer;
-import io.javabrains.springbootquickstart.models.Question;
 import io.javabrains.springbootquickstart.services.AnswerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -40,10 +39,7 @@ public class AnswerController {
     }
 
     @PostMapping("/categories/{categoryId}/questions/{questionId}/answers")
-    public ResponseEntity<String> addAnswer(@RequestBody Answer answer, @PathVariable int questionId,@PathVariable int categoryId){
-        Question temp = new Question(0,0,null,categoryId);
-        temp.setId(questionId);
-        answer.setQuestion(temp);
+    public ResponseEntity<String> addAnswer(@RequestBody Answer answer){
         try {
             answerService.addAnswer(answer);
             return new ResponseEntity<>("The answer is added successfully", HttpStatus.OK);
@@ -54,10 +50,7 @@ public class AnswerController {
     }
 
     @PutMapping("/categories/{categoryId}/questions/{questionId}/answers")
-    public ResponseEntity<String> updateAnswer(@RequestBody Answer answer, @PathVariable int questionId, @PathVariable int categoryId){
-        Question temp = new Question(0,0,null,categoryId);
-        temp.setId(questionId);
-        answer.setQuestion(temp);
+    public ResponseEntity<String> updateAnswer(@RequestBody Answer answer) {
         try {
             answerService.updateAnswer(answer);
             return new ResponseEntity<>("The answer is updated successfully", HttpStatus.OK);

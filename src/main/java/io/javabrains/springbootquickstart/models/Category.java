@@ -1,6 +1,11 @@
 package io.javabrains.springbootquickstart.models;
 
+import io.javabrains.springbootquickstart.converters.ListToStringConverter;
+
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -19,7 +24,8 @@ public class Category {
     @Column(name="image_url")
     String imageURL;
     @Column(name="tags")
-    String tags[];
+    @Convert(converter = ListToStringConverter.class)
+    List<String> tags;
 
     @OneToMany(mappedBy="category")
     private Set<Question> question;
@@ -32,7 +38,7 @@ public class Category {
         this.name = name;
         this.description = description;
         this.imageURL = imageURL;
-        this.tags = tags;
+        this.tags = new ArrayList<String>(Arrays.asList(tags));
     }
 
     public int getId() {
@@ -67,12 +73,12 @@ public class Category {
         this.imageURL = imageURL;
     }
 
-    public String[] getTags() {
+    public List<String> getTags() {
         return tags;
     }
 
     public void setTags(String[] tags) {
-        this.tags = tags;
+        this.tags = new ArrayList<String>(Arrays.asList(tags));
     }
 
 }
