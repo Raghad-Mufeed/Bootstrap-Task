@@ -1,32 +1,46 @@
 package io.javabrains.springbootquickstart.models;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import javax.persistence.*;
+import java.util.Set;
+
 
 @Entity
+@Table(name = "QUESTION")
 public class Question {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="question_id")
     int id;
+    @Column(name="like_count")
     int likeCount;
+    @Column(name="dislike_count")
     int dislikeCount;
-    int numberOfAnswers;
+    @Column(name="text")
     String text;
 
     @ManyToOne
-    Category category;
+    @JoinColumn(name="category_id", nullable=false)
+    private Category category;
+
+    @OneToMany(mappedBy="question")
+    private Set<Answer> answer;
 
     public Question() {
     }
 
-    public Question(int id, int likeCount, int dislikeCount, int numberOfAnswers, String text, int categoryId) {
-        this.id = id;
+    public Question(int likeCount, int dislikeCount, String text, int categoryId) {
         this.likeCount = likeCount;
         this.dislikeCount = dislikeCount;
-        this.numberOfAnswers = numberOfAnswers;
         this.text = text;
-        category =new Category(categoryId,"","","",null);
+        category =new Category("","","",null);
+        category.setId(categoryId);
+    }
+
+    @JsonProperty("numberOfAnswers")
+    public int getNumberOfAnswers() {
+        return answer.size();
     }
 
     public Category getCategory() {
@@ -61,14 +75,6 @@ public class Question {
         this.dislikeCount = dislikeCount;
     }
 
-    public int getNumberOfAnswers() {
-        return numberOfAnswers;
-    }
-
-    public void setNumberOfAnswers(int numberOfAnswers) {
-        this.numberOfAnswers = numberOfAnswers;
-    }
-
     public String getText() {
         return text;
     }
@@ -76,4 +82,5 @@ public class Question {
     public void setText(String text) {
         this.text = text;
     }
+
 }

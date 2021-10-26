@@ -17,7 +17,7 @@ public class AnswerService {
 
     public List<Answer> getAllAnswers(int questionId){
         List<Answer> answers = new ArrayList<Answer>();
-        answerRepository.findByQuestionID(questionId).forEach(answers::add);
+        answerRepository.findByQuestionId(questionId).forEach(answers::add);
         return answers;
     }
 

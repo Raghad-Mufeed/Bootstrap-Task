@@ -1,24 +1,37 @@
 package io.javabrains.springbootquickstart.models;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.Set;
 
 @Entity
+@Table(name = "CATEGORY")
 public class Category {
+
+
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="category_id")
     int id;
+    @Column(name="name")
     String name;
+    @Column(name="description")
     String description;
+    @Column(name="image_url")
+    String imageURL;
+    @Column(name="tags")
+    String tags[];
+
+    @OneToMany(mappedBy="category")
+    private Set<Question> question;
+
 
     public Category(){
     }
 
-    public Category(int id, String name, String description, String imageURL, String[] tags) {
-        this.id = id;
+    public Category(String name, String description, String imageURL, String[] tags) {
         this.name = name;
         this.description = description;
-        ImageURL = imageURL;
+        this.imageURL = imageURL;
         this.tags = tags;
     }
 
@@ -47,11 +60,11 @@ public class Category {
     }
 
     public String getImageURL() {
-        return ImageURL;
+        return imageURL;
     }
 
     public void setImageURL(String imageURL) {
-        ImageURL = imageURL;
+        this.imageURL = imageURL;
     }
 
     public String[] getTags() {
@@ -61,8 +74,5 @@ public class Category {
     public void setTags(String[] tags) {
         this.tags = tags;
     }
-
-    String ImageURL;
-    String tags[];
 
 }

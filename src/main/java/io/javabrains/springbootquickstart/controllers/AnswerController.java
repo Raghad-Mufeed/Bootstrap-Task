@@ -4,6 +4,8 @@ import io.javabrains.springbootquickstart.models.Answer;
 import io.javabrains.springbootquickstart.models.Question;
 import io.javabrains.springbootquickstart.services.AnswerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,30 +17,64 @@ public class AnswerController {
     @Autowired
     private AnswerService answerService;
 
-    @RequestMapping("/categories/{categoryId}/questions/{questionId}/answers")
-    public List<Answer> getAllAnswers(@PathVariable int questionId){
-        return answerService.getAllAnswers(questionId);
+    @GetMapping("/categories/{categoryId}/questions/{questionId}/answers")
+    public ResponseEntity<List<Answer>> getAllAnswers(@PathVariable int questionId){
+        try {
+            List<Answer> results = answerService.getAllAnswers(questionId);
+            return new ResponseEntity<>(results, HttpStatus.OK);
+        }
+        catch(Error error) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
     }
 
-    @RequestMapping("/categories/{categoryId}/questions/{questionId}/answers/{answerId}")
-    public Optional<Answer> getAnswer(@PathVariable int answerId) {
-        return answerService.getAnswer(answerId);
+    @GetMapping("/categories/{categoryId}/questions/{questionId}/answers/{answerId}")
+    public ResponseEntity<Optional<Answer>> getAnswer(@PathVariable int answerId) {
+        try {
+            Optional<Answer> result = answerService.getAnswer(answerId);
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        }
+        catch(Error error) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
     }
 
-    @RequestMapping(method = RequestMethod.POST, value="/categories/{categoryId}/questions/{questionId}/answers")
-    public void addAnswer(@RequestBody Answer answer, @PathVariable int questionId,@PathVariable int categoryId){
-        answer.setQuestion(new Question(questionId,0,0,0,null,categoryId));
-        answerService.addAnswer(answer);
+    @PostMapping("/categories/{categoryId}/questions/{questionId}/answers")
+    public ResponseEntity<String> addAnswer(@RequestBody Answer answer, @PathVariable int questionId,@PathVariable int categoryId){
+        Question temp = new Question(0,0,null,categoryId);
+        temp.setId(questionId);
+        answer.setQuestion(temp);
+        try {
+            answerService.addAnswer(answer);
+            return new ResponseEntity<>("The answer is added successfully", HttpStatus.OK);
+        }
+        catch(Error error) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
     }
 
-    @RequestMapping(method = RequestMethod.PUT, value="/categories/{categoryId}/questions/{questionId}/answers")
-    public void updateAnswer(@RequestBody Answer answer, @PathVariable int questionId,@PathVariable int categoryId){
-        answer.setQuestion(new Question(questionId,0,0,0,null,categoryId));
-        answerService.updateAnswer(answer);
+    @PutMapping("/categories/{categoryId}/questions/{questionId}/answers")
+    public ResponseEntity<String> updateAnswer(@RequestBody Answer answer, @PathVariable int questionId, @PathVariable int categoryId){
+        Question temp = new Question(0,0,null,categoryId);
+        temp.setId(questionId);
+        answer.setQuestion(temp);
+        try {
+            answerService.updateAnswer(answer);
+            return new ResponseEntity<>("The answer is updated successfully", HttpStatus.OK);
+        }
+        catch(Error error) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
     }
 
-    @RequestMapping(method=RequestMethod.DELETE,value="/categories/{categoryId}/questions/{questionId}/answers/{answerId}")
-    public void deleteAnswer(@PathVariable int answerId) {
-        answerService.deleteAnswer(answerId);
+    @DeleteMapping("/categories/{categoryId}/questions/{questionId}/answers/{answerId}")
+    public ResponseEntity<String> deleteAnswer(@PathVariable int answerId) {
+        try {
+            answerService.deleteAnswer(answerId);
+            return new ResponseEntity<>("The answer is deleted successfully", HttpStatus.OK);
+        }
+        catch(Error error) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
     }
 }

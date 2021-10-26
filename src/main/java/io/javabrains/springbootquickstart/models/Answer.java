@@ -1,30 +1,33 @@
 package io.javabrains.springbootquickstart.models;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
+@Table(name = "ANSWER")
 public class Answer {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="answer_id")
     int id;
+    @Column(name="like_count")
     int likeCount;
+    @Column(name="dislike_count")
     int dislikeCount;
+    @Column(name="text")
     String text;
 
     @ManyToOne
-    Question question;
+    @JoinColumn(name="question_id", nullable=false)
+    private Question question;
 
     public Answer() {
     }
 
-    public Answer(int id, int likeCount, int dislikeCount, String text, int questionId, int categoryId) {
-        this.id = id;
+    public Answer(int likeCount, int dislikeCount, String text, int questionId, int categoryId) {
         this.likeCount = likeCount;
         this.dislikeCount = dislikeCount;
         this.text = text;
-        question = new Question(questionId,0,0,0,null,categoryId);
+        question = new Question(0,0,null,categoryId);
     }
 
     public int getId() {
