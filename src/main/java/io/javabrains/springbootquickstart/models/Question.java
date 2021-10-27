@@ -3,12 +3,12 @@ package io.javabrains.springbootquickstart.models;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Set;
-
 
 @Entity
 @Table(name = "QUESTION")
-public class Question {
+public class Question implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="question_id")
@@ -40,6 +40,10 @@ public class Question {
 
     @JsonProperty("numberOfAnswers")
     public int getNumberOfAnswers() {
+        return answer.size();
+    }
+
+    public int getAnswersSize() {
         return answer.size();
     }
 

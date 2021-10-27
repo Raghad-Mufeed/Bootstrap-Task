@@ -1,19 +1,18 @@
 package io.javabrains.springbootquickstart.controllers;
 
-import io.javabrains.springbootquickstart.models.Answer;
 import io.javabrains.springbootquickstart.models.Category;
-import io.javabrains.springbootquickstart.models.Question;
 import io.javabrains.springbootquickstart.services.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 
 @RestController
-public class CategoryController {
+public class CategoryController implements Serializable {
 
     @Autowired
     private CategoryService categoryService;

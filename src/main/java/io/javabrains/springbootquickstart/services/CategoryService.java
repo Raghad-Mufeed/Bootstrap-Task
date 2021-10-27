@@ -1,8 +1,6 @@
 package io.javabrains.springbootquickstart.services;
 
-import io.javabrains.springbootquickstart.models.Answer;
 import io.javabrains.springbootquickstart.models.Category;
-import io.javabrains.springbootquickstart.repositiroies.AnswerRepository;
 import io.javabrains.springbootquickstart.repositiroies.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

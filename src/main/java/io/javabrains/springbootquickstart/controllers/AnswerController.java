@@ -1,6 +1,6 @@
 package io.javabrains.springbootquickstart.controllers;
 
-import io.javabrains.springbootquickstart.models.Answer;
+import io.javabrains.springbootquickstart.DTOModels.DTOAnswer;
 import io.javabrains.springbootquickstart.services.AnswerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 public class AnswerController {
@@ -17,9 +16,9 @@ public class AnswerController {
     private AnswerService answerService;
 
     @GetMapping("/categories/{categoryId}/questions/{questionId}/answers")
-    public ResponseEntity<List<Answer>> getAllAnswers(@PathVariable int questionId){
+    public ResponseEntity<List<DTOAnswer>> getAllAnswers(@PathVariable int questionId){
         try {
-            List<Answer> results = answerService.getAllAnswers(questionId);
+            List<DTOAnswer> results = answerService.getAllAnswers(questionId);
             return new ResponseEntity<>(results, HttpStatus.OK);
         }
         catch(Error error) {
@@ -28,9 +27,9 @@ public class AnswerController {
     }
 
     @GetMapping("/categories/{categoryId}/questions/{questionId}/answers/{answerId}")
-    public ResponseEntity<Optional<Answer>> getAnswer(@PathVariable int answerId) {
+    public ResponseEntity<DTOAnswer> getAnswer(@PathVariable int answerId) {
         try {
-            Optional<Answer> result = answerService.getAnswer(answerId);
+            DTOAnswer result = answerService.getAnswer(answerId);
             return new ResponseEntity<>(result, HttpStatus.OK);
         }
         catch(Error error) {
@@ -39,10 +38,10 @@ public class AnswerController {
     }
 
     @PostMapping("/categories/{categoryId}/questions/{questionId}/answers")
-    public ResponseEntity<String> addAnswer(@RequestBody Answer answer){
+    public ResponseEntity<List<DTOAnswer>> addAnswer(@RequestBody DTOAnswer dtoAnswer, @PathVariable int questionId){
         try {
-            answerService.addAnswer(answer);
-            return new ResponseEntity<>("The answer is added successfully", HttpStatus.OK);
+            List<DTOAnswer> answers = answerService.addAnswer(questionId, dtoAnswer);
+            return new ResponseEntity<>(answers, HttpStatus.OK);
         }
         catch(Error error) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
@@ -50,10 +49,10 @@ public class AnswerController {
     }
 
     @PutMapping("/categories/{categoryId}/questions/{questionId}/answers")
-    public ResponseEntity<String> updateAnswer(@RequestBody Answer answer) {
+    public ResponseEntity<List<DTOAnswer>> updateAnswer(@RequestBody DTOAnswer dtoAnswer, @PathVariable int questionId) {
         try {
-            answerService.updateAnswer(answer);
-            return new ResponseEntity<>("The answer is updated successfully", HttpStatus.OK);
+            List<DTOAnswer> answers = answerService.updateAnswer(questionId, dtoAnswer);
+            return new ResponseEntity<>(answers, HttpStatus.OK);
         }
         catch(Error error) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
@@ -61,10 +60,10 @@ public class AnswerController {
     }
 
     @DeleteMapping("/categories/{categoryId}/questions/{questionId}/answers/{answerId}")
-    public ResponseEntity<String> deleteAnswer(@PathVariable int answerId) {
+    public ResponseEntity<List<DTOAnswer>> deleteAnswer(@PathVariable int answerId, @PathVariable int questionId) {
         try {
-            answerService.deleteAnswer(answerId);
-            return new ResponseEntity<>("The answer is deleted successfully", HttpStatus.OK);
+            List<DTOAnswer> answers = answerService.deleteAnswer(questionId, answerId);
+            return new ResponseEntity<>(answers, HttpStatus.OK);
         }
         catch(Error error) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);

@@ -1,18 +1,12 @@
 package io.javabrains.springbootquickstart.controllers;
 
-import ch.qos.logback.core.util.DefaultInvocationGate;
-import com.sun.tools.jconsole.JConsoleContext;
 import io.javabrains.springbootquickstart.DTOModels.DTOQuestion;
-import io.javabrains.springbootquickstart.models.Category;
-import io.javabrains.springbootquickstart.models.Question;
-import org.apache.catalina.filters.ExpiresFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import io.javabrains.springbootquickstart.services.QuestionService;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 public class QuestionController {
@@ -21,10 +15,10 @@ public class QuestionController {
     private QuestionService questionService;
 
     @GetMapping("/categories/{categoryId}/questions")
-    public ResponseEntity<List<Question>> getAllQuestions(@PathVariable int categoryId){
+    public ResponseEntity<List<DTOQuestion>> getAllQuestions(@PathVariable int categoryId){
         try {
-            List<Question> results = questionService.getAllQuestions(categoryId);
-            return new ResponseEntity<>(results, HttpStatus.OK);
+            List<DTOQuestion> questions = questionService.getAllQuestions(categoryId);
+            return new ResponseEntity<>(questions, HttpStatus.OK);
         }
        catch(Error error) {
            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
@@ -32,9 +26,9 @@ public class QuestionController {
     }
 
     @GetMapping("/categories/{categoryId}/questions/{questionId}")
-    public ResponseEntity<Optional<Question>> getQuestion(@PathVariable int questionId) {
+    public ResponseEntity<DTOQuestion> getQuestion(@PathVariable int questionId) {
         try {
-            Optional<Question> result = questionService.getQuestion(questionId);
+            DTOQuestion result = questionService.getQuestion(questionId);
             return new ResponseEntity<>(result, HttpStatus.OK);
         }
         catch(Error error) {
@@ -43,10 +37,10 @@ public class QuestionController {
     }
 
     @PostMapping("/categories/{categoryId}/questions")
-    public ResponseEntity<String> addQuestion(@RequestBody DTOQuestion dtoQuestion){
+    public ResponseEntity<List<DTOQuestion>> addQuestion(@RequestBody DTOQuestion dtoQuestion, @PathVariable int categoryId){
         try {
-            questionService.addQuestion(dtoQuestion);
-            return new ResponseEntity<>("The question is added successfully", HttpStatus.OK);
+            List<DTOQuestion> questions = questionService.addQuestion(categoryId, dtoQuestion);
+            return new ResponseEntity<>(questions, HttpStatus.OK);
         }
         catch(Error error) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
@@ -54,10 +48,10 @@ public class QuestionController {
     }
 
     @PutMapping("/categories/{categoryId}/questions")
-    public ResponseEntity<String> updateQuestion(@RequestBody DTOQuestion dtoQuestion){
+    public ResponseEntity<List<DTOQuestion>> updateQuestion(@RequestBody DTOQuestion dtoQuestion, @PathVariable int categoryId){
         try {
-            questionService.updateQuestion(dtoQuestion);
-            return new ResponseEntity<>("The question is updated successfully", HttpStatus.OK);
+            List<DTOQuestion> questions = questionService.updateQuestion(categoryId, dtoQuestion);
+            return new ResponseEntity<>(questions, HttpStatus.OK);
         }
         catch(Error error) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
@@ -65,10 +59,10 @@ public class QuestionController {
     }
 
     @DeleteMapping("/categories/{categoryId}/questions/{questionId}")
-    public ResponseEntity<String> deleteQuestion(@PathVariable int questionId) {
+    public ResponseEntity<List<DTOQuestion>> deleteQuestion(@PathVariable int questionId, @PathVariable int categoryId) {
         try {
-            questionService.deleteQuestion(questionId);
-            return new ResponseEntity<>("The question is deleted successfully", HttpStatus.OK);
+            List<DTOQuestion> questions = questionService.deleteQuestion(categoryId, questionId);
+            return new ResponseEntity<>(questions, HttpStatus.OK);
         }
         catch(Error error) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);

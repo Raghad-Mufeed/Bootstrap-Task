@@ -1,14 +1,11 @@
 package io.javabrains.springbootquickstart.services;
 
-import com.sun.istack.NotNull;
-import com.sun.tools.jconsole.JConsoleContext;
 import io.javabrains.springbootquickstart.DTOModels.DTOQuestion;
 import io.javabrains.springbootquickstart.models.Category;
 import io.javabrains.springbootquickstart.models.Question;
 import io.javabrains.springbootquickstart.repositiroies.CategoryRepository;
 import io.javabrains.springbootquickstart.repositiroies.QuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.annotation.QueryAnnotation;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -24,33 +21,37 @@ public class QuestionService {
     @Autowired
     private CategoryRepository categoryRepository;
 
-    public List<Question> getAllQuestions(int categoryId) {
-        List<Question> questions = new ArrayList<Question>();
-        questionRepository.findByCategoryId(categoryId).forEach(questions::add);
+    public List<DTOQuestion> getAllQuestions(int categoryId) {
+        List<DTOQuestion> questions = new ArrayList<DTOQuestion>();
+        questionRepository.findByCategoryId(categoryId).forEach(question -> questions.add(QuestionToDTO(question)));
+        questions.sort((a, b) -> (a.getId() > b.getId()) ? 1 : -1);
         return questions;
     }
 
-    public Optional<Question> getQuestion(int questionId){
-        return questionRepository.findById(questionId);
+    public DTOQuestion getQuestion(int questionId){
+        Optional<Question> question = questionRepository.findById(questionId);
+        if(question.isPresent()){
+            return QuestionToDTO(question.get());
+        }
+        return null;
     }
 
-    public void addQuestion(DTOQuestion dtoQuestion){
+    public List<DTOQuestion> addQuestion(int categoryId, DTOQuestion dtoQuestion){
         Question question = DTOToQuestion(dtoQuestion);
         questionRepository.save(question);
+        return getAllQuestions(categoryId);
     }
 
-    public void updateQuestion(DTOQuestion dtoQuestion){
-        /*
-        Question question = questionRepository.findById(dtoQuestion.getId());
-        question.setText(dtoQuestion.getText());
-        question.setLikeCount(dtoQuestion.getLikeCount());
-        question.setDislikeCount(dtoQuestion.getDislikeCount());
+    public List<DTOQuestion> updateQuestion(int categoryId, DTOQuestion dtoQuestion){
+        Question question = DTOToQuestion(dtoQuestion);
+        question.setId(dtoQuestion.getId());
         questionRepository.save(question);
-        */
+        return getAllQuestions(categoryId);
     }
 
-    public void deleteQuestion(int questionId){
+    public List<DTOQuestion> deleteQuestion(int categoryId, int questionId){
         questionRepository.deleteById(questionId);
+        return getAllQuestions(categoryId);
     }
 
     public Question DTOToQuestion(DTOQuestion dtoQuestion) {
@@ -58,8 +59,18 @@ public class QuestionService {
         question.setLikeCount(dtoQuestion.getLikeCount());
         question.setDislikeCount(dtoQuestion.getDislikeCount());
         question.setText(dtoQuestion.getText());
-        question.setCategory(categoryRepository.getById(dtoQuestion.getCategoryId()));
+        Optional<Category> category = categoryRepository.findById(dtoQuestion.getCategoryId());
+        if(category.isPresent()){
+            question.setCategory(category.get());
+        }
         return question;
+    }
+
+    public DTOQuestion QuestionToDTO(Question question) {
+        DTOQuestion dtoQuestion = new DTOQuestion(question.getLikeCount(), question.getDislikeCount(),
+                question.getText(), question.getCategory().getId());
+        dtoQuestion.setId(question.getId());
+        return dtoQuestion;
     }
 
 }

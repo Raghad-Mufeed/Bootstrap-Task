@@ -3,6 +3,7 @@ package io.javabrains.springbootquickstart.models;
 import io.javabrains.springbootquickstart.converters.ListToStringConverter;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -10,8 +11,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "CATEGORY")
-public class Category {
-
+public class Category implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
