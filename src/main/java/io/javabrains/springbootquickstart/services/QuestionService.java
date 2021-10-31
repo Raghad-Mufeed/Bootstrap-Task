@@ -3,6 +3,7 @@ package io.javabrains.springbootquickstart.services;
 import io.javabrains.springbootquickstart.DTOModels.DTOQuestion;
 import io.javabrains.springbootquickstart.models.Category;
 import io.javabrains.springbootquickstart.models.Question;
+import io.javabrains.springbootquickstart.repositiroies.AnswerRepository;
 import io.javabrains.springbootquickstart.repositiroies.CategoryRepository;
 import io.javabrains.springbootquickstart.repositiroies.QuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,6 +71,7 @@ public class QuestionService {
         DTOQuestion dtoQuestion = new DTOQuestion(question.getLikeCount(), question.getDislikeCount(),
                 question.getText(), question.getCategory().getId());
         dtoQuestion.setId(question.getId());
+       // dtoQuestion.setNumberOfAnswers(question.getNumberOfAnswers());
         return dtoQuestion;
     }
 
