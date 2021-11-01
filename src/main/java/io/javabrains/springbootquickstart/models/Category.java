@@ -10,28 +10,31 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
-@Table(name = "CATEGORY")
+@Table(name = "category")
 public class Category implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="category_id")
-    int id;
+    private int id;
+
     @Column(name="name")
-    String name;
+    private String name;
+
     @Column(name="description")
-    String description;
+    private String description;
+
     @Column(name="image_url")
-    String imageURL;
+    private String imageURL;
+
     @Column(name="tags")
     @Convert(converter = ListToStringConverter.class)
-    List<String> tags;
+    private List<String> tags;
 
     @OneToMany(mappedBy="category")
     private Set<Question> question;
 
-
-    public Category(){
+    public Category() {
     }
 
     public Category(String name, String description, String imageURL, String[] tags) {

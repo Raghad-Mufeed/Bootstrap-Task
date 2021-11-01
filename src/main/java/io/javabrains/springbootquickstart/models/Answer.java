@@ -1,34 +1,50 @@
 package io.javabrains.springbootquickstart.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import io.javabrains.springbootquickstart.models.DTOModels.AnswerDTO;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "ANSWER")
+@Table(name = "answer")
 public class Answer implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="answer_id")
-    int id;
-    @Column(name="like_count")
-    int likeCount;
-    @Column(name="dislike_count")
-    int dislikeCount;
-    @Column(name="text")
-    String text;
+    private int id;
 
+    @Column(name="like_count")
+    private int likeCount;
+
+    @Column(name="dislike_count")
+    private int dislikeCount;
+
+    @Column(name="text")
+    private String text;
+
+    @JsonIgnoreProperties("hibernateLazyInitializer")
     @ManyToOne
     @JoinColumn(name="question_id", nullable=false)
     private Question question;
 
     public Answer() {
+
     }
 
-    public Answer(int likeCount, int dislikeCount, String text, int questionId, int categoryId) {
+    public Answer(AnswerDTO answerDTO, Question question) {
+        this.id = answerDTO.getId();
+        this.likeCount = answerDTO.getLikeCount();
+        this.dislikeCount = answerDTO.getDislikeCount();
+        this.text = answerDTO.getText();
+        this.question = question;
+    }
+
+    public Answer(int likeCount, int dislikeCount, String text, Question question) {
         this.likeCount = likeCount;
         this.dislikeCount = dislikeCount;
         this.text = text;
-        question = new Question(0,0,null,categoryId);
+        this.question = question;
     }
 
     public int getId() {

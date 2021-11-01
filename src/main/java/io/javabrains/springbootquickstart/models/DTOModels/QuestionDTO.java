@@ -1,20 +1,28 @@
-package io.javabrains.springbootquickstart.DTOModels;
+package io.javabrains.springbootquickstart.models.DTOModels;
 
-public class DTOAnswer {
-    int id;
-    int likeCount;
-    int dislikeCount;
-    String text;
-    int questionId;
+public class QuestionDTO {
+    private int id;
+    private int likeCount;
+    private int dislikeCount;
+    private String text;
+    private int categoryId;
 
-    public DTOAnswer() {
+    public QuestionDTO() {
     }
 
-    public DTOAnswer(int likeCount, int dislikeCount, String text, int questionId) {
+    public QuestionDTO(int likeCount, int dislikeCount, String text, int categoryId) {
         this.likeCount = likeCount;
         this.dislikeCount = dislikeCount;
         this.text = text;
-        this.questionId = questionId;
+        this.categoryId = categoryId;
+    }
+
+    public int getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(int categoryId) {
+        this.categoryId = categoryId;
     }
 
     public int getId() {
@@ -49,11 +57,4 @@ public class DTOAnswer {
         this.text = text;
     }
 
-    public int getQuestionId() {
-        return questionId;
-    }
-
-    public void setQuestionId(int questionId) {
-        this.questionId = questionId;
-    }
 }

@@ -1,6 +1,6 @@
 package io.javabrains.springbootquickstart.services;
 
-import io.javabrains.springbootquickstart.DTOModels.DTOAnswer;
+import io.javabrains.springbootquickstart.models.DTOModels.AnswerDTO;
 import io.javabrains.springbootquickstart.models.Answer;
 import io.javabrains.springbootquickstart.repositiroies.AnswerRepository;
 import io.javabrains.springbootquickstart.repositiroies.QuestionRepository;
@@ -20,52 +20,27 @@ public class AnswerService {
     @Autowired
     private QuestionRepository questionRepository;
 
-    public List<DTOAnswer> getAllAnswers(int questionId){
-        List<DTOAnswer> answers = new ArrayList<DTOAnswer>();
-        answerRepository.findByQuestionId(questionId).forEach(answer -> answers.add(AnswerToDTO(answer)));
-        answers.sort((a, b) -> (a.getId() > b.getId()) ? 1 : -1);
+    public List<Answer> getAllAnswers(int questionId) {
+        List<Answer> answers = new ArrayList<Answer>();
+        answerRepository.findByQuestionId(questionId).forEach(answers::add);
         return answers;
     }
 
-    public DTOAnswer getAnswer(int answerId){
-        Optional<Answer> answer = answerRepository.findById(answerId);
-        if(answer.isPresent()){
-            return AnswerToDTO(answer.get());
-        }
-        return null;
+    public Optional<Answer> getAnswer(int answerId) {
+        return answerRepository.findById(answerId);
     }
 
-    public List<DTOAnswer> addAnswer(int questionId, DTOAnswer dtoAnswer){
-        Answer answer = DTOToAnswer(dtoAnswer);
-        answerRepository.save(answer);
-        return getAllAnswers(questionId);
+    public Answer addAnswer(AnswerDTO answerDTO) {
+        Answer answer = new Answer(answerDTO, questionRepository.getById(answerDTO.getQuestionId()));
+        return answerRepository.save(answer);
     }
 
-    public List<DTOAnswer> updateAnswer(int questionId, DTOAnswer dtoAnswer){
-        Answer answer = DTOToAnswer(dtoAnswer);
-        answer.setId(dtoAnswer.getId());
-        answerRepository.save(answer);
-        return getAllAnswers(questionId);
+    public Answer updateAnswer(AnswerDTO answerDTO) {
+        Answer answer = new Answer(answerDTO, questionRepository.getById(answerDTO.getQuestionId()));
+        return answerRepository.save(answer);
     }
 
-    public List<DTOAnswer> deleteAnswer(int questionId, int answerId){
+    public void deleteAnswer(int answerId) {
         answerRepository.deleteById(answerId);
-        return getAllAnswers(questionId);
-    }
-
-    public Answer DTOToAnswer(DTOAnswer dtoAnswer) {
-        Answer answer = new Answer();
-        answer.setLikeCount(dtoAnswer.getLikeCount());
-        answer.setDislikeCount(dtoAnswer.getDislikeCount());
-        answer.setText(dtoAnswer.getText());
-        answer.setQuestion(questionRepository.getById(dtoAnswer.getQuestionId()));
-        return answer;
-    }
-
-    public DTOAnswer AnswerToDTO(Answer answer) {
-        DTOAnswer dtoAnswer = new DTOAnswer(answer.getLikeCount(), answer.getDislikeCount(),
-                answer.getText(), answer.getQuestion().getId());
-        dtoAnswer.setId(answer.getId());
-        return dtoAnswer;
     }
 }

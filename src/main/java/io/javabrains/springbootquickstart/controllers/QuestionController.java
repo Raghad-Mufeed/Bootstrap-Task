@@ -1,23 +1,26 @@
 package io.javabrains.springbootquickstart.controllers;
 
-import io.javabrains.springbootquickstart.DTOModels.DTOQuestion;
+import io.javabrains.springbootquickstart.models.DTOModels.QuestionDTO;
+import io.javabrains.springbootquickstart.models.Question;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import io.javabrains.springbootquickstart.services.QuestionService;
 import java.util.List;
+import java.util.Optional;
 
+@RequestMapping("/questions")
 @RestController
 public class QuestionController {
 
     @Autowired
     private QuestionService questionService;
 
-    @GetMapping("/categories/{categoryId}/questions")
-    public ResponseEntity<List<DTOQuestion>> getAllQuestions(@PathVariable int categoryId){
+    @GetMapping
+    public ResponseEntity<List<Question>> getAllQuestions(@RequestParam int categoryId){
         try {
-            List<DTOQuestion> questions = questionService.getAllQuestions(categoryId);
+            List<Question> questions = questionService.getAllQuestions(categoryId);
             return new ResponseEntity<>(questions, HttpStatus.OK);
         }
        catch(Error error) {
@@ -25,10 +28,10 @@ public class QuestionController {
        }
     }
 
-    @GetMapping("/categories/{categoryId}/questions/{questionId}")
-    public ResponseEntity<DTOQuestion> getQuestion(@PathVariable int questionId) {
+    @GetMapping("{questionId}")
+    public ResponseEntity<Optional<Question>> getQuestion(@PathVariable int questionId) {
         try {
-            DTOQuestion result = questionService.getQuestion(questionId);
+            Optional<Question> result = questionService.getQuestion(questionId);
             return new ResponseEntity<>(result, HttpStatus.OK);
         }
         catch(Error error) {
@@ -36,33 +39,33 @@ public class QuestionController {
         }
     }
 
-    @PostMapping("/categories/{categoryId}/questions")
-    public ResponseEntity<List<DTOQuestion>> addQuestion(@RequestBody DTOQuestion dtoQuestion, @PathVariable int categoryId){
+    @PostMapping
+    public ResponseEntity<Question> addQuestion(@RequestBody QuestionDTO questionDTO){
         try {
-            List<DTOQuestion> questions = questionService.addQuestion(categoryId, dtoQuestion);
-            return new ResponseEntity<>(questions, HttpStatus.OK);
+            Question question = questionService.addQuestion(questionDTO);
+            return new ResponseEntity<>(question, HttpStatus.OK);
         }
         catch(Error error) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
     }
 
-    @PutMapping("/categories/{categoryId}/questions")
-    public ResponseEntity<List<DTOQuestion>> updateQuestion(@RequestBody DTOQuestion dtoQuestion, @PathVariable int categoryId){
+    @PutMapping
+    public ResponseEntity<Question> updateQuestion(@RequestBody QuestionDTO questionDTO){
         try {
-            List<DTOQuestion> questions = questionService.updateQuestion(categoryId, dtoQuestion);
-            return new ResponseEntity<>(questions, HttpStatus.OK);
+            Question question = questionService.updateQuestion(questionDTO);
+            return new ResponseEntity<>(question, HttpStatus.OK);
         }
         catch(Error error) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
     }
 
-    @DeleteMapping("/categories/{categoryId}/questions/{questionId}")
-    public ResponseEntity<List<DTOQuestion>> deleteQuestion(@PathVariable int questionId, @PathVariable int categoryId) {
+    @DeleteMapping("{questionId}")
+    public ResponseEntity<String> deleteQuestion(@PathVariable int questionId) {
         try {
-            List<DTOQuestion> questions = questionService.deleteQuestion(categoryId, questionId);
-            return new ResponseEntity<>(questions, HttpStatus.OK);
+            questionService.deleteQuestion(questionId);
+            return new ResponseEntity<>(null, HttpStatus.OK);
         }
         catch(Error error) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);

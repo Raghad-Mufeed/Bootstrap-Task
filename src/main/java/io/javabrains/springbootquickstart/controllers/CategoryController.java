@@ -11,30 +11,29 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 
+@RequestMapping("/categories")
 @RestController
 public class CategoryController implements Serializable {
 
     @Autowired
     private CategoryService categoryService;
 
-    @GetMapping("/categories")
-    public ResponseEntity<List<Category>> getAllCategories(){
+    @GetMapping("")
+    public ResponseEntity<List<Category>> getAllCategories() {
         try {
             List<Category> results = categoryService.getAllCategories();
             return new ResponseEntity<>(results, HttpStatus.OK);
-        }
-        catch(Error error) {
+        } catch (Error error) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
     }
 
-    @GetMapping("/categories/{categoryId}")
+    @GetMapping("{categoryId}")
     public ResponseEntity<Optional<Category>> getCategory(@PathVariable int categoryId) {
         try {
             Optional<Category> result = categoryService.getCategory(categoryId);
             return new ResponseEntity<>(result, HttpStatus.OK);
-        }
-        catch(Error error) {
+        } catch (Error error) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
     }
